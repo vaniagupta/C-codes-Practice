@@ -1,0 +1,61 @@
+
+#include<stdio.h>
+#include<stdlib.h>
+
+struct Stack{
+    char *arr;
+    int top;
+};
+
+void initialize(struct Stack *stack, int size)
+{
+    stack->arr = (char *)malloc(size*sizeof(char));
+    stack->top = -1;
+}
+
+int isEmpty(struct Stack *stack)
+{
+    return stack->top == -1;
+}
+
+void push(struct Stack *stack, char value)
+{
+    stack->arr[++stack->top] = value;
+}
+
+char pop(struct Stack *stack)
+{
+    return stack->arr[stack->top--];
+}
+
+char peek(struct Stack *stack)
+{
+    return stack->arr[stack->top];
+}
+bool isValid(char* s) {
+    struct Stack* st;
+    st = (struct Stack*) malloc(sizeof(struct Stack));
+    initialize(st,10000);
+        for(int i = 0; i < strlen(s); i++){
+            char ch = s[i];
+            if(ch == '(' || ch == '[' || ch == '{'){
+                push(st,ch);
+            }
+            else{
+                if(isEmpty(st) == true){
+                    return false;
+                }
+                else if(ch == ')' && peek(st) == '(' || ch == ']' && peek(st) == '[' || ch == '}' && peek(st) == '{'){
+                    pop(st);
+                }
+                else
+                return false;
+            }
+        }
+        return isEmpty(st);
+
+
+
+
+    
+}

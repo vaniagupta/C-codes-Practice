@@ -1,0 +1,74 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+
+void strreverse(char* str) {
+    int length = strlen(str);
+    char temp;
+    for (int i = 0; i < length / 2; i++) {
+        temp = str[i];
+        str[i] = str[length - i - 1];
+        str[length - i - 1] = temp;
+    }
+}
+
+struct stack{
+    int top;
+    char* arr;
+};
+void initialise(struct stack* st, int size){
+    st->arr = (char*) malloc(size);
+    st->top = -1;
+}
+bool isEmpty(struct stack* st){
+    return st->top == -1;
+}
+
+void push(struct stack* st,char val){
+    st->arr[++st->top] = val;
+}
+
+char pop(struct stack* st){
+    return st->arr[st->top--];
+}
+char peek(struct stack* st){
+    return st->arr[st->top];
+}
+char* removeDuplicateLetters(char* s) {
+    struct stack* st;
+    st = (struct stack *) malloc(sizeof(struct stack));
+    initialise(st,strlen(s));
+
+    bool visited[26] = {0};
+    int freq[26] = {0};
+
+    for(int i = 0; i < strlen(s); i++){
+        char ch = s[i];
+        freq[ch-'a']++;
+    }
+
+    for(int i = 0; i < strlen(s); i++){
+        char ch = s[i];
+        if(visited[ch-'a'] == true){
+            freq[ch-'a']--;
+            continue;
+        }
+        while(!isEmpty(st) && peek(st) > ch && freq[peek(st)-'a'] > 0){
+            visited[peek(st) -'a'] = false;
+            pop(st);
+        }
+        push(st,ch);
+        visited[ch-'a'] = true;
+        freq[ch-'a']--;
+    }
+    char result[strlen(s)+1];
+    int i = 0;
+    while(!isEmpty(st)){
+        result[i++] = pop(st);
+    }
+    result[i] = '\0';
+    strreverse(result);
+    char * ans = result;
+    return ans;
+}

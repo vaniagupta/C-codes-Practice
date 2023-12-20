@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+struct Stack {
+    int top;
+    int array[100];
+};
+
+void initialize(struct Stack *stack) {
+    stack->top = -1;
+}
+
+bool isEmpty(struct Stack *stack) {
+    return stack->top == -1;
+}
+
+void push(struct Stack *stack, int value) {
+   
+    stack->array[++stack->top] = value;
+}
+
+int pop(struct Stack *stack) {
+    
+    return stack->array[stack->top--];
+}
+
+int evaluatePostfix(char expression[]) {
+    struct Stack* stack;
+    stack = (struct Stack *) malloc(sizeof(stack));
+    initialize(stack);
+
+    for (int i = 0; expression[i] != '?'; i++) {
+        if (expression[i] >= '0' && expression[i] <= '9') {
+            int operand = 0;
+            while (expression[i] >= '0' && expression[i] <= '9') {
+                operand = operand * 10 + (int)(expression[i] - '0');
+                i++;
+            }
+            i--; 
+            push(stack, operand);
+        } else if (expression[i] != ' ') {
+            int operand1 = pop(stack);
+            int operand2 = pop(stack);
+
+            switch (expression[i]) {
+                case '+':
+                    push(stack, operand1 + operand2);
+                    break;
+                case '-':
+                    push(stack, operand2 - operand1);
+                    break;
+                case '*':
+                    push(stack, operand1 * operand2);
+                    break;
+                case '/':
+                    push(stack, operand2 / operand1);
+                    break;
+                default:
+                    exit(EXIT_FAILURE);
+            }
+        }
+    }
+    return pop(stack);
+}
+
+int main() {
+    int numTestCases;
+    scanf("%d", &numTestCases);
+
+    for (int i = 0; i < numTestCases; i++) {
+        char expression[100];
+        scanf(" %[^\n]", expression);
+
+        int result = evaluatePostfix(expression);
+        printf("%d\n", result);
+    }
+
+    return 0;
+}
